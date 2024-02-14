@@ -1,0 +1,51 @@
+service: new-account-alert
+provider:
+  name: aws
+  runtime: nodejs18.x
+  timeout: 30
+  memorySize: 128
+  tags: ${self:custom.tags}
+  stage: ${opt:stage, "test"}
+  region: ${opt:region, "ap-south-1"}
+
+  iam:
+    role:
+      statements:
+      - Effect: Allow
+        Action:
+           - sns:Publish
+        Resource: "*"
+
+custom:
+  tags:
+    Application: NewAccountAlert
+    CreatedBy: Bizcloudexperts
+    Environment: ${self:provider.stage}
+package:
+  individually: true
+layers:
+  NewAccountAlertLayer:
+    path: layer/lib
+    name: New-Account-Alert-${self:provider.stage}
+    description: Notify Craetion of New Account - ${self:provider.stage}
+    compatibleRuntimes:
+      - nodejs18.x
+    retain: false
+functions:
+  newAccountAlert: ${file(config/functions/newAccountAlert.yaml):function}
+
+resources:
+  Resources:
+    NewAccountTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        DisplayName: NewAccountAlerts
+        TopicName: new-account-alert-topic
+
+    EmailSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Protocol: email
+        Endpoint: support@bizcloudexperts.com
+        TopicArn: 
+          Ref: NewAccountTopic

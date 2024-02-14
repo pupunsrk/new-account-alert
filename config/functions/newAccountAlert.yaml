@@ -1,0 +1,28 @@
+---
+function:
+  handler: src/newAccountAlert/index.handler
+  events:
+      - cloudwatchEvent:
+          event:
+            source:
+              - "organizations.amazonaws.com"
+            detail-type:
+              - "AWS API Call via CloudTrail"
+            detail:
+              eventSource:
+                - "organizations.amazonaws.com"
+              eventName:
+                - "CreateAccount"
+  memorySize: 256
+  timeout: 30
+  runtime: nodejs18.x
+  description: new account creation alert - ${self:provider.stage}
+  name: new-account-creation-alert-${self:provider.stage}
+  layers:
+    - { Ref: NewAccountAlertLayerLambdaLayer }
+  environment:
+    SNS_TOPIC_ARN: { Ref: "NewAccountTopic" }
+  package:
+    patterns:
+      - "!**/*"
+      - "src/newAccountAlert/**"
