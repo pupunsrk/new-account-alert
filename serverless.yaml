@@ -42,10 +42,26 @@ resources:
         DisplayName: NewAccountAlerts
         TopicName: new-account-alert-topic
 
-    EmailSubscription:
+    EmailSubscription1:
       Type: AWS::SNS::Subscription
       Properties:
         Protocol: email
-        Endpoint: support@bizcloudexperts.com
+        Endpoint: bhramara@bizcloudexperts.com
+        TopicArn: 
+          Ref: NewAccountTopic
+
+    EmailSubscription2:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Protocol: email
+        Endpoint: rupesh.kothapalli@bizcloudexperts.com
+        TopicArn: 
+          Ref: NewAccountTopic
+
+    EmailSubscription3:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Protocol: email
+        Endpoint: tarun.yalavarthi@bizcloudexperts.com
         TopicArn: 
           Ref: NewAccountTopic

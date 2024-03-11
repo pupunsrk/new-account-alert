@@ -2,17 +2,19 @@
 function:
   handler: src/newAccountAlert/index.handler
   events:
-      - cloudwatchEvent:
-          event:
+      - eventBridge:
+          name: New-Account-Alerts
+          pattern:
             source:
-              - "organizations.amazonaws.com"
+              - aws.organizations
             detail-type:
-              - "AWS API Call via CloudTrail"
+              - AWS API Call via CloudTrail
             detail:
               eventSource:
                 - "organizations.amazonaws.com"
               eventName:
-                - "CreateAccount"
+                - CreateAccount
+                - InviteAccountToOrganization
   memorySize: 256
   timeout: 30
   runtime: nodejs18.x
